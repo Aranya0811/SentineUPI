@@ -12,6 +12,12 @@ const User = require('./models/User');
 const authenticateToken = require('./middleware/auth');
 const { evaluateRules } = require('./services/ruleEngine');
 const { getMLRiskScore } = require('./services/mlClient');
+const {
+  checkMuleRegistry,
+  parseAndAnalyzeUpiUri,
+  generateCybercrimeDossier,
+  KNOWN_MULE_REGISTRY
+} = require('./services/threatIntelligence');
 
 const app = express();
 const server = http.createServer(app);
@@ -22,6 +28,7 @@ app.use(express.json());
 const JWT_SECRET = process.env.JWT_SECRET || 'sentinel_upi_jwt_secret_secure_key_9999';
 
 // In-memory fallback stores for robust hackathon/demo execution
+const memoryTransactions = [];
 const memoryUsers = [
   {
     id: 'usr_demo_1',
@@ -215,12 +222,14 @@ app.post('/api/transactions/process', async (req, res) => {
 
     const hour_of_day = new Date().getHours();
 
-    // 1. Evaluate Heuristic Rules
+    // 1. Evaluate Heuristic Rules & Threat Intelligence
     const ruleFlags = evaluateRules({
       velocity_last_10m,
       amount,
       is_new_payee,
-      geo_distance_km
+      geo_distance_km,
+      receiverVpa,
+      device_risk_score
     });
 
     // 2. Fetch ML prediction from Python Microservice
@@ -238,8 +247,17 @@ app.post('/api/transactions/process', async (req, res) => {
     let finalDecision = mlResult.decision;
     let reason = mlResult.reason;
 
-    // Elevate to BLOCK if critical heuristic triggered
-    if (ruleFlags.length >= 2 || ruleFlags.includes('IMPOSSIBLE_TRAVEL_VELOCITY')) {
+    // Check Mule Registry match
+    const muleRecord = checkMuleRegistry(receiverVpa);
+    if (muleRecord) {
+      finalRiskScore = 99.0;
+      finalDecision = 'BLOCK';
+      reason = `CRITICAL BLACKLIST: Beneficiary listed in NCRP/1930 Mule Database (${muleRecord.firReference}) for "${muleRecord.category}".`;
+    } else if (ruleFlags.includes('DEVICE_COMPROMISE_SUSPECTED')) {
+      finalRiskScore = Math.max(finalRiskScore, 92);
+      finalDecision = 'BLOCK';
+      reason = 'CRITICAL: High device risk index (0.8+). Screen sharing or remote access Trojan suspected.';
+    } else if (ruleFlags.length >= 2 || ruleFlags.includes('IMPOSSIBLE_TRAVEL_VELOCITY')) {
       finalRiskScore = Math.max(finalRiskScore, 85);
       finalDecision = 'BLOCK';
       reason = `Multiple rules violated: ${ruleFlags.join(', ')}`;
@@ -255,8 +273,14 @@ app.post('/api/transactions/process', async (req, res) => {
       decisionReason: reason,
       deviceRiskScore: Number(device_risk_score),
       velocity: Number(velocity_last_10m),
+      ruleFlags,
+      muleRecord: muleRecord || null,
       timestamp: new Date()
     };
+
+    // Keep last 50 in memory for immediate fast lookup
+    memoryTransactions.unshift(txnRecord);
+    if (memoryTransactions.length > 50) memoryTransactions.pop();
 
     // Save to Mongo if available
     try {
@@ -287,9 +311,77 @@ app.get('/api/transactions', async (req, res) => {
     if (mongoose.connection.readyState === 1) {
       txns = await Transaction.find().sort({ timestamp: -1 }).limit(30);
     }
+    if (txns.length === 0) {
+      txns = memoryTransactions;
+    }
     res.json(txns);
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+// --- NEW FORENSICS & THREAT INTELLIGENCE ENDPOINTS ---
+
+// 1. UPI QR Code & Deep Link Intent Forensic Inspector
+app.post('/api/scan/upi-intent', (req, res) => {
+  try {
+    const { uri } = req.body;
+    if (!uri) {
+      return res.status(400).json({ success: false, message: 'UPI URI string is required.' });
+    }
+    const analysis = parseAndAnalyzeUpiUri(uri);
+
+    // If critical threat, broadcast alert to dashboard
+    if (analysis.riskLevel === 'CRITICAL_THREAT') {
+      io.emit('threat_intercepted', {
+        type: 'UPI_INTENT_INTERCEPTED',
+        payee: analysis.parsed?.payeeVpa,
+        score: analysis.riskScore,
+        findings: analysis.findings,
+        timestamp: new Date()
+      });
+    }
+
+    res.json({ success: true, ...analysis });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// 2. National Cybercrime (NCRP) Mule Registry Database lookup
+app.get('/api/intelligence/mule-registry', (req, res) => {
+  res.json({
+    success: true,
+    registryAuthority: 'Citizen Financial Cyber Fraud Reporting System (CFCFRMS / Helpline 1930)',
+    totalNodes: KNOWN_MULE_REGISTRY.length,
+    mules: KNOWN_MULE_REGISTRY
+  });
+});
+
+// 3. Generate Official Cybercrime FIR Incident Dossier
+app.get('/api/reports/cybercrime-dossier/:txnId', async (req, res) => {
+  try {
+    const { txnId } = req.params;
+    let txn = memoryTransactions.find(t => t.txnId === txnId);
+    if (!txn && mongoose.connection.readyState === 1) {
+      txn = await Transaction.findOne({ txnId });
+    }
+    if (!txn) {
+      txn = {
+        txnId,
+        senderVpa: 'victim@okhdfcbank',
+        receiverVpa: 'mule_ring_99@ybl',
+        amount: 45000,
+        riskScore: 99,
+        decision: 'BLOCK',
+        decisionReason: 'Beneficiary flagged in NCRP/1930 Mule Database',
+        timestamp: new Date()
+      };
+    }
+    const dossier = generateCybercrimeDossier(txn);
+    res.json({ success: true, dossier });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 

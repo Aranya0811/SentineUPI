@@ -6,6 +6,7 @@ import About from './components/About';
 import Contact from './components/Contact';
 import Simulator from './components/Simulator';
 import Dashboard from './components/Dashboard';
+import QRScanner from './components/QRScanner';
 import Footer from './components/Footer';
 import { useAuth } from './context/AuthContext';
 import { ShieldCheck } from 'lucide-react';
@@ -27,7 +28,7 @@ export default function App() {
 
   // Robust Scroll Spy: checks from bottom to top and handles page bottom reach
   useEffect(() => {
-    const sectionIds = ['home', 'console', 'threats', 'about', 'contact'];
+    const sectionIds = ['home', 'console', 'qr-scanner', 'threats', 'about', 'contact'];
     
     const handleScroll = () => {
       // 1. If user is at or near the bottom of the page (in Contact section or viewing Footer)
@@ -115,7 +116,12 @@ export default function App() {
           </div>
         </section>
 
-        {/* SECTION 3: THREAT INTEL */}
+        {/* SECTION 3: UPI INTENT & QR FORENSIC SCANNER */}
+        <section id="qr-scanner" className="pt-6 border-t border-slate-200">
+          <QRScanner />
+        </section>
+
+        {/* SECTION 4: THREAT INTEL */}
         <section id="threats" className="pt-6 border-t border-slate-200">
           <ThreatSlideshow />
         </section>

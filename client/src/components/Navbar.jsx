@@ -12,6 +12,7 @@ export default function Navbar({ activeSection, onNavigate }) {
   const navItems = [
     { id: 'home', label: 'Home' },
     { id: 'console', label: 'Defense Console' },
+    { id: 'qr-scanner', label: 'QR Scanner' },
     { id: 'threats', label: 'Threat Intel' },
     { id: 'about', label: 'About' },
     { id: 'contact', label: 'Contact Us' }

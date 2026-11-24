@@ -1,4 +1,6 @@
-// Heuristic Rule Checks to catch obvious fraud before ML
+const { checkMuleRegistry } = require('./threatIntelligence');
+
+// Heuristic Rule Checks to catch obvious fraud and known cybercrime signatures
 function evaluateRules(payload) {
   const flags = [];
 
@@ -15,6 +17,19 @@ function evaluateRules(payload) {
   // Rule 3: Extreme distance jump (> 1000 km)
   if (payload.geo_distance_km >= 1000) {
     flags.push('IMPOSSIBLE_TRAVEL_VELOCITY');
+  }
+
+  // Rule 4: Recipient identified in National Cybercrime Mule Registry (I4C / 1930)
+  if (payload.receiverVpa) {
+    const mule = checkMuleRegistry(payload.receiverVpa);
+    if (mule) {
+      flags.push('MULE_ACCOUNT_NCRP_BLACKLIST');
+    }
+  }
+
+  // Rule 5: Critical Device Compromise / Screen Sharing / Root
+  if (payload.device_risk_score && Number(payload.device_risk_score) >= 0.8) {
+    flags.push('DEVICE_COMPROMISE_SUSPECTED');
   }
 
   return flags;

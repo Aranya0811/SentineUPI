@@ -47,6 +47,11 @@ export default function Footer({ onNavigate }) {
                 </button>
               </li>
               <li>
+                <button onClick={() => onNavigate('qr-scanner')} className="hover:text-white transition">
+                  QR Scanner
+                </button>
+              </li>
+              <li>
                 <button onClick={() => onNavigate('threats')} className="hover:text-white transition">
                   Threat Intel
                 </button>

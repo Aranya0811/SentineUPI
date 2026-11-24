@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Send, AlertTriangle, ShieldCheck, ShieldAlert, AtSign, Smartphone, Building2 } from 'lucide-react';
+import { Send, AlertTriangle, ShieldCheck, ShieldAlert, AtSign, Smartphone, Building2, FileText, ChevronRight } from 'lucide-react';
+import { API_BASE_URL } from '../config/api';
+import CyberDossierModal from './CyberDossierModal';
 
 export default function Simulator() {
   const [transferMode, setTransferMode] = useState('UPI_ID');
+  const [showDossierModal, setShowDossierModal] = useState(false);
 
   // Input states - start blank
   const [senderVpa, setSenderVpa] = useState('');
@@ -136,7 +139,7 @@ export default function Simulator() {
     };
 
     try {
-      const res = await axios.post('http://localhost:5000/api/transactions/process', payload);
+      const res = await axios.post(`${API_BASE_URL}/api/transactions/process`, payload);
       setResult(res.data.transaction);
     } catch (err) {
       alert('Backend connection error: ' + err.message);
@@ -376,24 +379,70 @@ export default function Simulator() {
         </button>
       </form>
 
-      {/* Result Card */}
+      {/* Result Card with Explainable AI & Law Enforcement Export */}
       {result && (
-        <div className={`mt-5 p-4 rounded-xl border text-sm ${
+        <div className={`mt-5 p-5 rounded-xl border text-sm transition animate-fadeIn ${
           result.decision === 'BLOCK' ? 'bg-rose-50 border-rose-200 text-rose-900' :
           result.decision === 'OTP_CHALLENGE' ? 'bg-amber-50 border-amber-200 text-amber-900' :
           'bg-emerald-50 border-emerald-200 text-emerald-900'
         }`}>
-          <div className="flex items-center justify-between font-extrabold text-base">
+          <div className="flex items-center justify-between font-extrabold text-base pb-2 border-b border-black/10">
             <span className="flex items-center gap-2">
               {result.decision === 'BLOCK' && <ShieldAlert className="w-5 h-5 text-rose-600" />}
               {result.decision === 'OTP_CHALLENGE' && <AlertTriangle className="w-5 h-5 text-amber-600" />}
               {result.decision === 'ALLOW' && <ShieldCheck className="w-5 h-5 text-emerald-600" />}
-              Decision: {result.decision}
+              Defense Decision: <span className="uppercase">{result.decision}</span>
             </span>
-            <span>Risk Score: {result.riskScore}%</span>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-black/10">
+              Risk Score: {result.riskScore}%
+            </span>
           </div>
-          <p className="text-xs sm:text-sm mt-2 text-slate-700 font-medium">{result.decisionReason}</p>
+          
+          <p className="text-xs sm:text-sm mt-3 text-slate-800 font-semibold leading-relaxed">
+            {result.decisionReason}
+          </p>
+
+          {/* Explainable Factor Indicators */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 pt-3 border-t border-black/10 text-[11px]">
+            <div className="bg-white/80 p-2 rounded border border-black/5">
+              <span className="text-slate-500 block">Velocity (10m)</span>
+              <strong className="text-slate-900">{result.velocity || formData.velocity_last_10m} txns</strong>
+            </div>
+            <div className="bg-white/80 p-2 rounded border border-black/5">
+              <span className="text-slate-500 block">Device Risk</span>
+              <strong className="text-slate-900">{result.deviceRiskScore || formData.device_risk_score}</strong>
+            </div>
+            <div className="bg-white/80 p-2 rounded border border-black/5">
+              <span className="text-slate-500 block">Beneficiary</span>
+              <strong className="text-slate-900">{formData.is_new_payee === '1' ? 'First-Time' : 'Known'}</strong>
+            </div>
+            <div className="bg-white/80 p-2 rounded border border-black/5">
+              <span className="text-slate-500 block">Channel</span>
+              <strong className="text-slate-900">{transferMode}</strong>
+            </div>
+          </div>
+
+          {/* Law Enforcement FIR Dossier Button */}
+          {result.decision !== 'ALLOW' && (
+            <div className="mt-4 pt-3 border-t border-black/10 flex items-center justify-between">
+              <span className="text-[11px] text-slate-600 font-medium">
+                National Cybercrime Evidence Ready
+              </span>
+              <button
+                type="button"
+                onClick={() => setShowDossierModal(true)}
+                className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm"
+              >
+                <FileText className="w-3.5 h-3.5" /> View 1930 / NCRP Dossier
+              </button>
+            </div>
+          )}
         </div>
+      )}
+
+      {/* Cybercrime FIR Dossier Modal */}
+      {showDossierModal && (
+        <CyberDossierModal txn={result} onClose={() => setShowDossierModal(false)} />
       )}
     </div>
   );

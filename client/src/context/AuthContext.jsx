@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 
 const AuthContext = createContext(null);
 
@@ -14,7 +15,7 @@ export const AuthProvider = ({ children }) => {
       const storedToken = localStorage.getItem('sentinel_token');
       if (storedToken) {
         try {
-          const res = await axios.get('http://localhost:5000/api/auth/me', {
+          const res = await axios.get(`${API_BASE_URL}/api/auth/me`, {
             headers: { Authorization: `Bearer ${storedToken}` }
           });
           if (res.data.success) {
@@ -34,7 +35,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const res = await axios.post(`${API_BASE_URL}/api/auth/login`, { email, password });
       if (res.data.success) {
         const { token: newToken, user: userData } = res.data;
         localStorage.setItem('sentinel_token', newToken);
@@ -52,7 +53,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (name, email, password, role = 'SOC_ANALYST') => {
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/register', {
+      const res = await axios.post(`${API_BASE_URL}/api/auth/register`, {
         name,
         email,
         password,

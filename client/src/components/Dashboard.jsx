@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
-import { ShieldCheck, ShieldAlert, AlertTriangle, Activity, Smartphone, Building2, AtSign } from 'lucide-react';
+import { ShieldCheck, ShieldAlert, AlertTriangle, Activity, Smartphone, Building2, AtSign, FileText } from 'lucide-react';
+import { API_BASE_URL } from '../config/api';
+import CyberDossierModal from './CyberDossierModal';
 
 export default function Dashboard() {
   const [feed, setFeed] = useState([]);
   const [stats, setStats] = useState({ total: 0, blocked: 0, challenged: 0, allowed: 0 });
+  const [selectedDossierTxn, setSelectedDossierTxn] = useState(null);
 
   useEffect(() => {
-    const socket = io('http://localhost:5000');
+    const socket = io(API_BASE_URL);
 
     socket.on('new_transaction', (txn) => {
       setFeed((prev) => [txn, ...prev.slice(0, 19)]);
@@ -120,9 +123,20 @@ export default function Dashboard() {
                     </span>
                   </td>
                   <td className="p-3 text-xs font-semibold">
-                    {t.decision === 'BLOCK' && <span className="text-rose-600 font-bold">Blocked</span>}
-                    {t.decision === 'OTP_CHALLENGE' && <span className="text-amber-700 font-bold">Challenge</span>}
-                    {t.decision === 'ALLOW' && <span className="text-emerald-600 font-bold">Approved</span>}
+                    <div className="flex items-center gap-2">
+                      {t.decision === 'BLOCK' && <span className="text-rose-600 font-bold">Blocked</span>}
+                      {t.decision === 'OTP_CHALLENGE' && <span className="text-amber-700 font-bold">Challenge</span>}
+                      {t.decision === 'ALLOW' && <span className="text-emerald-600 font-bold">Approved</span>}
+                      {t.decision !== 'ALLOW' && (
+                        <button
+                          onClick={() => setSelectedDossierTxn(t)}
+                          title="Generate Cybercrime FIR Dossier (1930 / NCRP)"
+                          className="p-1 hover:bg-slate-200 rounded text-slate-600 hover:text-rose-700 transition"
+                        >
+                          <FileText className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))
@@ -130,6 +144,14 @@ export default function Dashboard() {
           </tbody>
         </table>
       </div>
+
+      {/* Incident Evidence Dossier Modal */}
+      {selectedDossierTxn && (
+        <CyberDossierModal
+          txn={selectedDossierTxn}
+          onClose={() => setSelectedDossierTxn(null)}
+        />
+      )}
     </div>
   );
 }
