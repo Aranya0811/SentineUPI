@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
-import { ShieldCheck, ShieldAlert, AlertTriangle, Activity } from 'lucide-react';
+import { ShieldCheck, ShieldAlert, AlertTriangle, Activity, Smartphone, Building2, AtSign } from 'lucide-react';
 
 export default function Dashboard() {
   const [feed, setFeed] = useState([]);
@@ -22,70 +22,107 @@ export default function Dashboard() {
     return () => socket.disconnect();
   }, []);
 
+  const getMethodBadge = (receiver) => {
+    if (!receiver) return null;
+    if (receiver.includes('A/C')) {
+      return (
+        <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
+          <Building2 className="w-2.5 h-2.5 text-slate-500" /> Account
+        </span>
+      );
+    }
+    if (/^\d{10}@/.test(receiver) || receiver.startsWith('+91')) {
+      return (
+        <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
+          <Smartphone className="w-2.5 h-2.5 text-blue-500" /> Mobile
+        </span>
+      );
+    }
+    return (
+      <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
+        <AtSign className="w-2.5 h-2.5 text-slate-500" /> VPA
+      </span>
+    );
+  };
+
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-2xl text-white">
-      <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
-        <h2 className="text-xl font-bold flex items-center gap-2 text-indigo-400">
-          <Activity className="w-5 h-5 animate-pulse text-red-500" />
-          Real-Time SOC Threat Monitor
-        </h2>
-        <span className="text-xs px-2 py-1 bg-slate-800 text-slate-400 rounded">Socket: Live Feed</span>
+    <div className="bg-white border border-slate-200 rounded-lg p-5 text-slate-800 shadow-sm">
+      
+      {/* Header */}
+      <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-slate-200">
+        <div>
+          <h2 className="text-sm font-bold text-slate-900 tracking-tight">
+            Live Stream Interception Table
+          </h2>
+          <p className="text-[11px] text-slate-500">Real-time telemetry stream via WebSocket</p>
+        </div>
+        <span className="text-[11px] text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded font-medium border border-slate-200">
+          Stream Online
+        </span>
       </div>
 
-      <div className="grid grid-cols-4 gap-3 mb-6">
-        <div className="bg-slate-950 p-3 rounded border border-slate-800 text-center">
-          <p className="text-xs text-slate-400">Total Scanned</p>
-          <p className="text-2xl font-bold">{stats.total}</p>
+      {/* Metric summary counters */}
+      <div className="grid grid-cols-4 gap-2.5 mb-5">
+        <div className="bg-slate-50 p-2.5 rounded border border-slate-200">
+          <span className="text-[11px] text-slate-500 font-medium">Scanned</span>
+          <p className="text-xl font-bold text-slate-900">{stats.total}</p>
         </div>
-        <div className="bg-emerald-950/30 p-3 rounded border border-emerald-500/30 text-center">
-          <p className="text-xs text-emerald-400">Allowed</p>
-          <p className="text-2xl font-bold text-emerald-400">{stats.allowed}</p>
+        <div className="bg-emerald-50/70 p-2.5 rounded border border-emerald-200">
+          <span className="text-[11px] text-emerald-700 font-medium">Approved</span>
+          <p className="text-xl font-bold text-emerald-700">{stats.allowed}</p>
         </div>
-        <div className="bg-amber-950/30 p-3 rounded border border-amber-500/30 text-center">
-          <p className="text-xs text-amber-400">Challenged</p>
-          <p className="text-2xl font-bold text-amber-400">{stats.challenged}</p>
+        <div className="bg-amber-50/70 p-2.5 rounded border border-amber-200">
+          <span className="text-[11px] text-amber-800 font-medium">Challenged</span>
+          <p className="text-xl font-bold text-amber-800">{stats.challenged}</p>
         </div>
-        <div className="bg-rose-950/30 p-3 rounded border border-rose-500/30 text-center">
-          <p className="text-xs text-rose-400">Blocked</p>
-          <p className="text-2xl font-bold text-rose-400">{stats.blocked}</p>
+        <div className="bg-rose-50/70 p-2.5 rounded border border-rose-200">
+          <span className="text-[11px] text-rose-700 font-medium">Blocked</span>
+          <p className="text-xl font-bold text-rose-700">{stats.blocked}</p>
         </div>
       </div>
 
-      <div className="overflow-x-auto max-h-[360px] overflow-y-auto">
+      {/* Transaction Table */}
+      <div className="overflow-x-auto max-h-[360px] overflow-y-auto border border-slate-200 rounded">
         <table className="w-full text-left text-xs">
-          <thead className="bg-slate-950 text-slate-400 sticky top-0">
+          <thead className="bg-slate-50 text-slate-600 sticky top-0 border-b border-slate-200">
             <tr>
-              <th className="p-2">TXN ID</th>
-              <th className="p-2">Sender ➔ Receiver</th>
-              <th className="p-2">Amount</th>
-              <th className="p-2">Risk</th>
-              <th className="p-2">Action</th>
+              <th className="py-2 px-3 font-semibold">TXN ID</th>
+              <th className="py-2 px-3 font-semibold">Channel</th>
+              <th className="py-2 px-3 font-semibold">Sender ➔ Receiver</th>
+              <th className="py-2 px-3 font-semibold">Amount</th>
+              <th className="py-2 px-3 font-semibold">Risk</th>
+              <th className="py-2 px-3 font-semibold">Action</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800">
+          <tbody className="divide-y divide-slate-100 bg-white">
             {feed.length === 0 ? (
               <tr>
-                <td colSpan="5" className="text-center py-8 text-slate-500">Waiting for incoming UPI stream...</td>
+                <td colSpan="6" className="text-center py-10 text-slate-400 text-xs">
+                  Awaiting transactions. Dispatch a payment on the left to review telemetry.
+                </td>
               </tr>
             ) : (
               feed.map((t) => (
-                <tr key={t.txnId} className="hover:bg-slate-800/40 transition">
-                  <td className="p-2 font-mono text-slate-300">{t.txnId}</td>
-                  <td className="p-2 font-mono text-slate-400">{t.senderVpa} <span className="text-cyan-400">➔</span> {t.receiverVpa}</td>
-                  <td className="p-2 font-semibold">₹{t.amount.toLocaleString('en-IN')}</td>
-                  <td className="p-2">
-                    <span className={`px-2 py-0.5 rounded font-bold ${
-                      t.riskScore >= 75 ? 'bg-rose-900 text-rose-200' :
-                      t.riskScore >= 40 ? 'bg-amber-900 text-amber-200' :
-                      'bg-emerald-900 text-emerald-200'
+                <tr key={t.txnId} className="hover:bg-slate-50 transition">
+                  <td className="p-3 font-mono text-slate-700 text-[11px]">{t.txnId}</td>
+                  <td className="p-3">{getMethodBadge(t.receiverVpa)}</td>
+                  <td className="p-3 font-mono text-slate-600 text-[11px]">
+                    {t.senderVpa} <span className="text-slate-400">➔</span> {t.receiverVpa}
+                  </td>
+                  <td className="p-3 font-semibold text-slate-900">₹{t.amount.toLocaleString('en-IN')}</td>
+                  <td className="p-3">
+                    <span className={`px-2 py-0.5 rounded text-[11px] font-semibold border ${
+                      t.riskScore >= 75 ? 'bg-rose-50 text-rose-700 border-rose-200' :
+                      t.riskScore >= 40 ? 'bg-amber-50 text-amber-800 border-amber-200' :
+                      'bg-emerald-50 text-emerald-700 border-emerald-200'
                     }`}>
                       {t.riskScore}%
                     </span>
                   </td>
-                  <td className="p-2 font-bold">
-                    {t.decision === 'BLOCK' && <span className="text-rose-400">🚫 BLOCKED</span>}
-                    {t.decision === 'OTP_CHALLENGE' && <span className="text-amber-400">⚠️ CHALLENGE</span>}
-                    {t.decision === 'ALLOW' && <span className="text-emerald-400">✅ APPROVED</span>}
+                  <td className="p-3 text-xs font-semibold">
+                    {t.decision === 'BLOCK' && <span className="text-rose-600 font-bold">Blocked</span>}
+                    {t.decision === 'OTP_CHALLENGE' && <span className="text-amber-700 font-bold">Challenge</span>}
+                    {t.decision === 'ALLOW' && <span className="text-emerald-600 font-bold">Approved</span>}
                   </td>
                 </tr>
               ))
