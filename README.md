@@ -1,39 +1,53 @@
 # 🛡️ SentinelUPI — Real-Time Payment Fraud Interception & Cyber Defense Console
 
-[![Node.js Version](https://img.shields.io/badge/Node.js-20.x-green.svg)](https://nodejs.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-blue.svg)](https://fastapi.tiangolo.com/)
-[![React](https://img.shields.io/badge/React-18-cyan.svg)](https://react.dev/)
-[![NPCI Compliant](https://img.shields.io/badge/NPCI%20Standard-UPI%20v2.0-orange.svg)](https://www.npci.org.in/)
+<div align="center">
 
-**SentinelUPI** is an autonomous, sub-35ms real-time digital payment threat interception platform and Security Operations Center (SOC) defense console engineered specifically for Unified Payments Interface (UPI) rails.
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Active_Radar-emerald?style=for-the-badge&logo=firefox)](https://aranya0811.github.io/SentineUPI/)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-AryanSingh1938%2FSentineUPI-blue?style=for-the-badge&logo=github)](https://github.com/AryanSingh1938/SentineUPI)
+[![NPCI Compliant](https://img.shields.io/badge/Standard-NPCI_UPI_2.0-orange?style=for-the-badge)](https://www.npci.org.in/)
 
-It pairs **deterministic heuristic gatekeepers** with **gradient-boosted behavioral ML models** and integrates **I4C / 1930 National Cybercrime Reporting Portal** mule registries to block payment scams, collect-request phishing, and organized money mule layering networks in real time.
+### 🌐 **Live Application URL:** [https://aranya0811.github.io/SentineUPI/](https://aranya0811.github.io/SentineUPI/)
+
+</div>
 
 ---
 
-## 🚀 Key Capabilities
+**SentinelUPI** is an autonomous, sub-35ms digital payment threat interception platform and Security Operations Center (SOC) defense radar engineered specifically for Unified Payments Interface (UPI) rails.
 
-### 1. ⚡ Multi-Tier Fraud Interception Engine (< 35ms)
-* **Tier 1 — Deterministic Heuristic Gates**: Sub-5ms detection of high velocity spikes ($\ge 5$ txns in 10 mins), impossible geolocation displacement jumps ($\ge 1000\text{ km}$), and sudden huge transfers to first-time beneficiaries.
-* **Tier 2 — Gradient-Boosted Behavioral ML**: Microservice built with FastAPI + scikit-learn scoring across 7 scaled dimensions: amount-to-average ratio, time-of-day, velocity, device integrity index, and spatial distance.
-* **Tier 3 — National Cybercrime Mule Registry (I4C / 1930)**: Live cross-referencing against simulated Citizen Financial Cyber Fraud Reporting and Management System (CFCFRMS) mule blacklist accounts.
+It pairs **deterministic heuristic gatekeepers** with **gradient-boosted behavioral ML models** and integrates **I4C / 1930 National Cybercrime Reporting Portal (NCRP)** mule registries to detect payment scams, malicious intent links, and organized money mule layering networks in real time.
 
-### 2. 🔍 UPI Deep Link & QR Code Forensic Inspector
-* Decodes `upi://pay?...` intent links and QR codes.
-* Unmasks **Display Name Spoofing** (e.g. scammer naming themselves *"Electricity Board"* or *"Bank Helpdesk"* while using an individual unverified VPA).
-* Detects **Collect-Request Traps** where deceptive notes tell victims to enter their UPI PIN to "receive" funds or refunds.
+---
 
-### 3. 🚨 Automated Cybercrime FIR Incident Dossier (1930 / NCRP)
-* One-click generation and download of standardized Law Enforcement Incident Dossiers compliant with the National Cyber Crime Reporting Portal (NCRP / MHA).
-* Includes raw transaction telemetry, IP/device fingerprints, violation codes, and Section 91 CrPC preservation instructions for beneficiary banks.
+## ⚡ Core Capabilities
+
+### 1. 🔍 UPI Deep Link & QR Code Forensic Inspector
+* Decodes `upi://pay?...` query strings and dynamic QR codes in real time.
+* Unmasks **Display Name Spoofing** (e.g., scammer naming themselves *"State Electricity Board"* or *"Bank Refund Helpdesk"* while mapping to an unverified personal handle).
+* Intercepts **Reverse Collect-Request Scams** where fraudulent notes claim *"Enter UPI PIN to receive refund voucher"*.
+* Identifies pre-filled high-amount dynamic QR parameters.
+
+### 2. 🚨 Automated Cybercrime FIR Incident Dossier (1930 / NCRP)
+* One-click generation and instant export of standardized Law Enforcement Incident Dossiers compliant with the Citizen Financial Cyber Fraud Reporting and Management System (CFCFRMS / Helpline 1930).
+* Generates formatted electronic evidence dossiers including raw transaction telemetry, IP/device fingerprints, violation codes, and Section 91 CrPC statutory hold instructions for the beneficiary bank.
+
+### 3. 🛑 I4C National Cybercrime Mule Registry
+* Automatically cross-references recipient VPAs, mobile numbers, and bank account IFSCs against known financial cybercrime syndicates.
+* Blocks payments sent to high-risk mule clusters with a 99% risk rating and attaches police FIR reference data directly into the SOC telemetry stream.
 
 ### 4. 📊 Real-Time SOC Defense Radar
-* Bi-directional WebSocket telemetry (`Socket.IO`) feeding real-time transaction streams into an interactive analyst dashboard.
-* Live metric counters for *Scanned*, *Approved*, *Challenged (Step-up OTP)*, and *Blocked* payments.
+* Bi-directional WebSocket telemetry (`Socket.IO`) streaming live transaction scans into an analyst dashboard.
+* Real-time metric counters for *Scanned*, *Approved*, *Challenged (Step-up OTP)*, and *Blocked* payments.
+
+### 5. 🔐 Zero-Friction Analyst Authentication
+* Role-based analyst sessions (*SOC Fraud Analyst*, *Senior Risk Officer*, *Security Administrator*).
+* Built-in 1-click **Auto-Fill Demo Credentials**:
+  - **Email:** `analyst@sentinel.ai`
+  - **Password:** `password123`
+* Offline client-side simulation fallbacks for instant evaluation.
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ System Architecture
 
 ```
                                  [ UPI Transaction Ingestion ]
@@ -69,10 +83,10 @@ It pairs **deterministic heuristic gatekeepers** with **gradient-boosted behavio
 
 ## 🛠️ Tech Stack
 
-| Layer | Technologies |
+| Component | Technologies |
 | :--- | :--- |
 | **Frontend** | React 18, Vite, Tailwind CSS, Socket.IO Client, Lucide Icons |
-| **Backend API** | Node.js, Express, Socket.IO, JWT, Mongoose |
+| **Backend API** | Node.js, Express, Socket.IO, JWT, Mongoose, CORS |
 | **ML Engine** | Python 3.10+, FastAPI, scikit-learn, joblib, NumPy |
 | **Database** | MongoDB (with seamless in-memory fallback for zero-dependency demos) |
 
@@ -94,9 +108,10 @@ cd SentineUPI
 ```bash
 cd ml-service
 python -m venv venv
-# On Windows:
+
+# Windows:
 .\venv\Scripts\activate
-# On Linux/macOS:
+# Linux/macOS:
 # source venv/bin/activate
 
 pip install -r requirements.txt
@@ -118,35 +133,16 @@ npm run dev
 ```
 
 Visit **`http://localhost:5173`** in your browser.
-- **Default Analyst Account**: `analyst@sentinel.ai`
-- **Default Password**: `password123`
 
 ---
 
-## 🌐 1-Click Live Deployment Guide
+## 🐳 Docker Setup
 
-### Deploying Frontend to Vercel
-1. Push your code to GitHub.
-2. Sign in to [Vercel](https://vercel.com) and click **"Add New Project"** $\rightarrow$ select your repository.
-3. Configure settings:
-   - **Root Directory**: `client`
-   - **Framework Preset**: `Vite`
-   - **Environment Variable**: `VITE_API_URL` = `https://<your-backend-domain>.onrender.com`
-4. Click **Deploy**.
+Run the entire multi-tier stack with Docker Compose:
 
-### Deploying Backend & ML to Render / Railway
-1. **ML Service**:
-   - New **Web Service** $\rightarrow$ Root Directory: `ml-service`
-   - Build Command: `pip install -r requirements.txt`
-   - Start Command: `uvicorn app:app --host 0.0.0.0 --port $PORT`
-2. **Express Server**:
-   - New **Web Service** $\rightarrow$ Root Directory: `server`
-   - Build Command: `npm install`
-   - Start Command: `node server.js`
-   - Environment Variables:
-     - `ML_SERVICE_URL`: URL of the deployed Python ML service
-     - `MONGO_URI`: MongoDB Atlas connection URI (optional; runs in-memory if omitted)
-     - `JWT_SECRET`: Random secure string
+```bash
+docker-compose up --build
+```
 
 ---
 
@@ -185,5 +181,5 @@ GET /api/reports/cybercrime-dossier/:txnId
 
 ---
 
-## 🛡️ License & Acknowledgements
-Built for Indian digital payment security research. Compliant with NPCI Unified Payments Interface architectural standards and MHA cybercrime reporting protocols.
+## 🛡️ License
+Built for Indian digital payment security research. Compliant with NPCI Unified Payments Interface specifications and MHA cybercrime reporting protocols.
