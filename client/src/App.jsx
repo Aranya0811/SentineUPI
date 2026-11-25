@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import ThreatSlideshow from './components/ThreatSlideshow';
-import About from './components/About';
 import Contact from './components/Contact';
 import Simulator from './components/Simulator';
 import Dashboard from './components/Dashboard';
@@ -28,7 +27,7 @@ export default function App() {
 
   // Robust Scroll Spy: checks from bottom to top and handles page bottom reach
   useEffect(() => {
-    const sectionIds = ['home', 'console', 'qr-scanner', 'threats', 'about', 'contact'];
+    const sectionIds = ['home', 'console', 'qr-scanner', 'threats', 'contact'];
     
     const handleScroll = () => {
       // 1. If user is at or near the bottom of the page (in Contact section or viewing Footer)
@@ -124,11 +123,6 @@ export default function App() {
         {/* SECTION 4: THREAT INTEL */}
         <section id="threats" className="pt-6 border-t border-slate-200">
           <ThreatSlideshow />
-        </section>
-
-        {/* SECTION 4: ABOUT ARCHITECTURE */}
-        <section id="about" className="pt-6 border-t border-slate-200">
-          <About />
         </section>
 
         {/* SECTION 5: CONTACT US */}
