@@ -44,6 +44,21 @@ export const AuthProvider = ({ children }) => {
         return { success: true };
       }
     } catch (err) {
+      // If backend is offline or static demo mode on GitHub Pages, allow instant fallback
+      if (!err.response || err.code === 'ERR_NETWORK') {
+        const fallbackUser = {
+          id: 'usr_demo_session',
+          name: email.split('@')[0].replace(/[._]/g, ' ').toUpperCase() || 'Chief Risk Officer',
+          email: email || 'analyst@sentinel.ai',
+          role: 'SOC_ANALYST',
+          organization: 'National Payments Defense SOC (Sandbox Mode)'
+        };
+        const demoToken = 'demo_jwt_token_' + Date.now();
+        localStorage.setItem('sentinel_token', demoToken);
+        setToken(demoToken);
+        setUser(fallbackUser);
+        return { success: true };
+      }
       return {
         success: false,
         message: err.response?.data?.message || 'Login failed. Please verify credentials.'
@@ -67,6 +82,21 @@ export const AuthProvider = ({ children }) => {
         return { success: true };
       }
     } catch (err) {
+      // Offline / Static Sandbox fallback
+      if (!err.response || err.code === 'ERR_NETWORK') {
+        const fallbackUser = {
+          id: 'usr_' + Date.now(),
+          name: name || 'Analyst Officer',
+          email: email || 'analyst@sentinel.ai',
+          role: role || 'SOC_ANALYST',
+          organization: 'National Payments Defense SOC'
+        };
+        const demoToken = 'demo_jwt_token_' + Date.now();
+        localStorage.setItem('sentinel_token', demoToken);
+        setToken(demoToken);
+        setUser(fallbackUser);
+        return { success: true };
+      }
       return {
         success: false,
         message: err.response?.data?.message || 'Registration failed. Try a different email.'
