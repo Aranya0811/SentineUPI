@@ -3,12 +3,22 @@
 <div align="center">
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-Active_Radar-emerald?style=for-the-badge&logo=firefox)](https://aranya0811.github.io/SentineUPI/)
+[![Project Presentation](https://img.shields.io/badge/Presentation-Download_PPTX-orange?style=for-the-badge&logo=microsoftpowerpoint)](https://github.com/AryanSingh1938/SentineUPI/blob/main/SentinelUPI_Software_Engineering_Project.pptx)
 [![GitHub Repo](https://img.shields.io/badge/GitHub-AryanSingh1938%2FSentineUPI-blue?style=for-the-badge&logo=github)](https://github.com/AryanSingh1938/SentineUPI)
-[![NPCI Compliant](https://img.shields.io/badge/Standard-NPCI_UPI_2.0-orange?style=for-the-badge)](https://www.npci.org.in/)
+[![NPCI Compliant](https://img.shields.io/badge/Standard-NPCI_UPI_2.0-red?style=for-the-badge)](https://www.npci.org.in/)
 
 ### 🌐 **Live Application URL:** [https://aranya0811.github.io/SentineUPI/](https://aranya0811.github.io/SentineUPI/)
+### 📊 **Software Engineering Presentation (PPTX):** [Download SentinelUPI_Software_Engineering_Project.pptx](https://github.com/AryanSingh1938/SentineUPI/blob/main/SentinelUPI_Software_Engineering_Project.pptx)
 
 </div>
+
+---
+
+## 👥 Project Development Team (Software Engineering)
+* **Aranya Kumar**
+* **Aryan Singh**
+* **Divit Pandey**
+* **Aditya Sharma**
 
 ---
 
@@ -178,6 +188,23 @@ Content-Type: application/json
 ```http
 GET /api/reports/cybercrime-dossier/:txnId
 ```
+
+---
+
+## 📊 Software Engineering Presentation (PPT)
+
+A complete 6-slide PowerPoint deck tailored for academic reviews, course evaluations, and software engineering capstone defenses is included directly in the root of the repository:
+
+* **File:** [`SentinelUPI_Software_Engineering_Project.pptx`](./SentinelUPI_Software_Engineering_Project.pptx)
+* **Direct Download Link:** [Download .pptx from GitHub](https://github.com/AryanSingh1938/SentineUPI/blob/main/SentinelUPI_Software_Engineering_Project.pptx)
+
+### Slide Contents Summary:
+1. **Slide 1:** Title, Project Domain, Live URL & Development Team (Aranya Kumar, Aryan Singh, Divit Pandey, Aditya Sharma).
+2. **Slide 2:** Problem Statement (UPI cybercrime crisis, collect scams, name spoofing) & Engineering Objectives.
+3. **Slide 3:** Multi-Tier Architecture & SLAs (Tier 1 Heuristics <5ms, Tier 2 ML Engine <20ms, Tier 3 Real-time SOC Radar).
+4. **Slide 4:** Module Implementation (QR / Intent Inspector, I4C / 1930 Mule Registry, Automated FIR Dossier Generator, Sandbox Simulator).
+5. **Slide 5:** Elaborated SDLC (Agile Scrum Framework, Functional vs. Non-Functional Requirements, Verification & QA Testing Matrix).
+6. **Slide 6:** Results, Latency Benchmarks, Live Edge Verification & Future Scope (GNN, Android On-Device RAT Shield).
 
 ---
 
